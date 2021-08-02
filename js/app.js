@@ -1,18 +1,5 @@
 /* ================================SELECT ITEMS===================================== */
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+
 const weekdays = [
   "Sunday",
   "Monday",
@@ -78,6 +65,7 @@ function loadMonth() {
     });
   });
 }
+
 function load() {
   const dt = new Date();
 
@@ -117,8 +105,30 @@ function load() {
     if (i > paddingDays) {
       daySquare.innerText = i - paddingDays;
 
+      const dayString = `${month + 1}/${i - paddingDays}/${year}`;
+
+      let selectedDay = events.filter(function (item) {
+        if (item.date === dayString) {
+          return item;
+        }
+      });
+
+      if (selectedDay) {
+        const eventDiv = document.createElement("div");
+        eventDiv.classList.add("event");
+        selectedDay.forEach(function (d) {
+          const eventTitle = document.createElement("h2");
+          eventTitle.classList.add("eventTitle");
+          eventTitle.textContent = d.value;
+
+          eventDiv.appendChild(eventTitle);
+        });
+
+        daySquare.appendChild(eventDiv);
+      }
+
       daySquare.addEventListener("click", function () {
-        addEvent(`${month + 1}/${i - paddingDays}/${year}`);
+        addEvent(dayString);
       });
     } else {
       daySquare.classList.add("padding");
@@ -131,6 +141,7 @@ function addEvent(date) {
   newEventModal.style.display = "block";
   modalBackDrop.style.display = "block";
   clicked = date;
+  setupEvents(date);
 }
 function closeModal() {
   newEventModal.style.display = "none";
@@ -145,14 +156,32 @@ function addItem(e) {
   const id = new Date().getTime().toString();
 
   if (value && !editFlag) {
-    console.log("added an item");
+    // add item
+    createListItem(id, value);
+
+    // display alery
+    displayAlert("item added to the list", "success");
+    // show container
+    // todoContainer.classList.add("show-container");
+
+    // local STORAGE
+    addToLocalStorage(clicked, id, value);
+
+    setBackToDefault();
   } else if (value && editFlag) {
-    console.log("edited an item");
+    editElement.innerHTML = value;
+    displayAlert("Text Changed", "success");
+
+    // localstorage
+    editLocalStorage(editID, value);
+
+    setBackToDefault();
   } else {
     displayAlert("Please enter a text", "danger");
   }
 }
 
+// display alert
 function displayAlert(text, action) {
   alert.textContent = text;
   alert.classList.add(`alert-${action}`);
@@ -163,8 +192,122 @@ function displayAlert(text, action) {
     alert.classList.remove(`alert-${action}`);
   }, 1000);
 }
+
+// create/add item
+function createListItem(id, value) {
+  const element = document.createElement("article");
+  element.classList.add("todoItem");
+  let attr = document.createAttribute("data-id");
+  attr.value = id;
+  // set attribute
+  element.setAttributeNode(attr);
+  element.innerHTML = `<div class="wrapper">
+  <input type="checkbox" id="${id}" class="title">
+  <label for="${id}" class="titleLabel">${value}</label>
+  </div>
+            <div class="btn-container">
+              <button type="button" class="edit-btn">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button type="button" class="delete-btn">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>`;
+
+  const deleteBtn = element.querySelector(".delete-btn");
+  const editBtn = element.querySelector(".edit-btn");
+  deleteBtn.addEventListener("click", deleteItem);
+  editBtn.addEventListener("click", editItem);
+
+  list.appendChild(element);
+}
+
+function deleteItem(e) {
+  const element = e.currentTarget.parentElement.parentElement;
+  const id = element.dataset.id;
+  list.removeChild(element);
+
+  // if (list.children.length === 0) {
+  //   list.classList.remove("show-container");
+  // }
+  displayAlert("Item Removed", "danger");
+
+  setBackToDefault();
+  // remove from local storage
+  removeFromLocalStorage(id);
+}
+function editItem(e) {
+  const element = e.currentTarget.parentElement.parentElement;
+  editElement = element.querySelector(".titleLabel");
+  todoInput.value = editElement.innerHTML;
+  editFlag = true;
+  editID = element.dataset.id;
+  addBtn.textContent = "Edit";
+}
+function setBackToDefault() {
+  todoInput.value = "";
+  editFlag = false;
+  editID = "";
+  addBtn.textContent = "Add";
+}
+
+function setupEvents(date) {
+  list.innerHTML = "";
+
+  let items = getLocalStorage();
+  let eventforDay = items.filter(function (item) {
+    if (item.date === date) {
+      return item;
+    }
+  });
+  eventforDay.forEach(function (item) {
+    if (item.date === date) {
+      createListItem(item.id, item.value);
+    }
+  });
+  // todoContainer.classList.add("show-container");
+}
+
+function clearItems() {
+  localStorage.removeItem(events);
+}
 /* ================================================================ */
 
 /* =====================LOCAL STORAGE============================ */
+function addToLocalStorage(clicked, id, value) {
+  const task = { date: clicked, id: id, value: value };
+  let items = getLocalStorage();
 
+  items.push(task);
+  localStorage.setItem("events", JSON.stringify(items));
+}
+
+function removeFromLocalStorage(id) {
+  let items = getLocalStorage();
+
+  // remove item with the same id from parameter
+  items = items.filter(function (item) {
+    if (item.id !== id) {
+      return item;
+    }
+  });
+  localStorage.setItem("events", JSON.stringify(items));
+}
+function editLocalStorage(id, value) {
+  let items = getLocalStorage();
+
+  items = items.map(function (item) {
+    // edit the value of the specific id
+    if (item.id === id) {
+      item.value = value;
+    }
+    return item;
+  });
+
+  localStorage.setItem("events", JSON.stringify(items));
+}
+
+function getLocalStorage() {
+  return events;
+}
 /* =========================================================== */
