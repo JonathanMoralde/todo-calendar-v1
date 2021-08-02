@@ -1,6 +1,8 @@
 /* ================================VARIABLES================================== */
 :root {
   --mainFont: "Poppins", sans-serif;
+  --darkColor: #395c6b;
+  --lightColor: #bcd3f2;
 }
 /* =========================================================================== */
 
@@ -29,4 +31,223 @@ a {
 /* =========================================================================== */
 
 /* ===================================MAIN==================================== */
+.main-container {
+  grid-template-columns: 1fr 7fr;
+}
+/******************** NAVBAR ********************/
+.navbar {
+  display: block;
+  width: 10vw;
+  height: 100vh;
+  background: var(--darkColor);
+  color: var(--lightColor);
+  box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.5);
+  position: fixed;
+}
+.year-container {
+  height: 10%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.year {
+  font-size: 2rem;
+  font-weight: bolder;
+  letter-spacing: 5px;
+  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+}
+.prev-button,
+.next-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--lightColor);
+  cursor: pointer;
+}
+
+.months-container {
+  height: 90%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.months {
+  width: 100%;
+  height: auto;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.months h2 {
+  letter-spacing: 5px;
+  font-size: 2rem;
+  font-weight: 500;
+  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+}
+.months:hover h2 {
+  padding-left: 5px;
+}
+/******************* END OF NAVBAR **************/
+
+/* **************** CALENDAR ****************** */
+.calendar-container {
+  width: 90vw;
+  margin-left: auto;
+  padding: 1rem 0;
+  color: var(--darkColor);
+  background: var(--lightColor);
+}
+.header {
+  text-align: center;
+  letter-spacing: 5px;
+  font-size: 2rem;
+}
+.container {
+  max-width: 1470px;
+  margin: 0 auto;
+}
+#weekdays {
+  display: flex;
+  width: 100%;
+}
+#weekdays > div {
+  width: 200px;
+  margin: 0 5px;
+  padding: 1rem;
+  text-align: center;
+  letter-spacing: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+#calendar {
+  width: 100%;
+  margin: auto;
+
+  display: flex;
+  flex-wrap: wrap;
+}
+.day {
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  margin: 5px;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fff;
+  cursor: pointer;
+}
+.day:hover {
+  opacity: 0.7;
+}
+.padding {
+  box-shadow: none;
+  background: none;
+  cursor: default;
+}
+.active {
+  background: var(--lightColor);
+  color: var(--darkColor);
+  transition: all 0.3s;
+}
+/* ************ END OF CALENDAR *************** */
+
+/* **************** MODAL ****************** */
+#newEventModal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25vw;
+  height: 50vh;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
+  z-index: 19;
+}
+.close-btn {
+  display: inline-block;
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #721c24;
+  cursor: pointer;
+}
+.todo-form {
+  padding: 3rem 2rem;
+}
+.todo-form h3 {
+  text-align: center;
+  text-transform: capitalize;
+  letter-spacing: 5px;
+  font-size: 2rem;
+  color: var(--darkColor);
+  margin-bottom: 1rem;
+}
+/* alert popup */
+.alert {
+  margin-bottom: 1rem;
+  height: 1.25rem;
+  display: grid;
+  align-items: center;
+  text-align: center;
+  font-size: 0.7rem;
+  border-radius: 0.25rem;
+  letter-spacing: 5px;
+  text-transform: capitalize;
+}
+.alert-danger {
+  color: #721c24;
+  background: #f8d7da;
+}
+.alert-success {
+  color: #155724;
+  background: #d4edda;
+}
+.form-control {
+  display: flex;
+  justify-content: center;
+}
+#todoInput {
+  width: 80%;
+  border: none;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  background: #ebebeb;
+  padding: 0.3rem 0.5rem;
+  color: var(--darkColor);
+}
+.submit-btn {
+  border: none;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 0.3rem 0.5rem;
+  letter-spacing: 2px;
+  text-transform: capitalize;
+  background: var(--lightColor);
+  color: var(--darkColor);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.submit-btn:hover {
+  background: var(--darkColor);
+  color: var(--lightColor);
+}
+#modalBackDrop {
+  display: none;
+  position: fixed;
+  top: 0%;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #00000086;
+  z-index: 9;
+}
+/* ************ END OF MODAL *************** */
+
 /* =========================================================================== */

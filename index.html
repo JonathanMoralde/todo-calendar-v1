@@ -26,15 +26,74 @@
     <!-- main container -->
     <main class="main-container">
       <!-- nav -->
-      <nav class="navbar"></nav>
+      <nav class="navbar">
+        <div class="year-container">
+          <button class="prev-button">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span class="year">2021</span>
+          <button class="next-button">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="months-container">
+          <div class="months"><h2>Jan</h2></div>
+          <div class="months"><h2>Feb</h2></div>
+          <div class="months"><h2>Mar</h2></div>
+          <div class="months"><h2>Apr</h2></div>
+          <div class="months"><h2>May</h2></div>
+          <div class="months"><h2>Jun</h2></div>
+          <div class="months"><h2>Jul</h2></div>
+          <div class="months"><h2>Aug</h2></div>
+          <div class="months"><h2>Sep</h2></div>
+          <div class="months"><h2>Oct</h2></div>
+          <div class="months"><h2>Nov</h2></div>
+          <div class="months"><h2>Dec</h2></div>
+        </div>
+      </nav>
       <!-- end of nav -->
 
       <!-- calendar section -->
-      <section class="calendar"></section>
+      <section class="calendar-container">
+        <div class="header"><h1>Calendar Checklist</h1></div>
+
+        <div class="container">
+          <div id="weekdays">
+            <div>Sunday</div>
+            <div>Monday</div>
+            <div>Tuesday</div>
+            <div>Wednesday</div>
+            <div>Thursday</div>
+            <div>Friday</div>
+            <div>Saturday</div>
+          </div>
+
+          <div id="calendar"></div>
+        </div>
+      </section>
       <!-- end of calendar section -->
 
-      <!-- checklist section -->
-      <section class="checklist"></section>
+      <!-- checklist modal section -->
+      <div id="newEventModal">
+        <!-- form -->
+        <form action="" class="todo-form">
+          <!-- button -->
+          <button type="button" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+          <p class="alert"></p>
+          <h3>to do list</h3>
+          <div class="form-control">
+            <input type="text" id="todoInput" placeholder="e.g. code" />
+            <button type="submit" class="submit-btn">Add</button>
+          </div>
+        </form>
+        <!-- list -->
+        <div class="todo-container">
+          <div class="todo-list"></div>
+        </div>
+      </div>
+      <div id="modalBackDrop"></div>
       <!-- end of checklist section -->
     </main>
     <!-- JAVASCRIPT -->
