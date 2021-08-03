@@ -34,6 +34,7 @@ const alert = document.querySelector(".alert");
 let editElement;
 let editFlag = false;
 let editID = "";
+
 /* ================================================================= */
 
 /* =======================EVENT LISTENERS============================= */
@@ -107,6 +108,13 @@ function load() {
 
       const dayString = `${month + 1}/${i - paddingDays}/${year}`;
 
+      // highlight today
+      const monthToday = new Date().getMonth();
+      if (i - paddingDays === day && selectedMonth === monthToday) {
+        daySquare.id = "currentDay";
+      }
+
+      // add existing event to daysquare
       let selectedDay = events.filter(function (item) {
         if (item.date === dayString) {
           return item;
@@ -144,10 +152,15 @@ function addEvent(date) {
   setupEvents(date);
 }
 function closeModal() {
+  if (events) {
+    saveCheckboxState();
+  }
   newEventModal.style.display = "none";
   modalBackDrop.style.display = "none";
   todoInput.value = "";
   clicked = null;
+  setBackToDefault();
+  window.location.reload();
 }
 
 function addItem(e) {
@@ -158,11 +171,8 @@ function addItem(e) {
   if (value && !editFlag) {
     // add item
     createListItem(id, value);
-
     // display alery
     displayAlert("item added to the list", "success");
-    // show container
-    // todoContainer.classList.add("show-container");
 
     // local STORAGE
     addToLocalStorage(clicked, id, value);
@@ -201,10 +211,11 @@ function createListItem(id, value) {
   attr.value = id;
   // set attribute
   element.setAttributeNode(attr);
-  element.innerHTML = `<div class="wrapper">
-  <input type="checkbox" id="${id}" class="title">
-  <label for="${id}" class="titleLabel">${value}</label>
-  </div>
+  element.innerHTML = `
+            <div class="wrapper">
+              <input type="checkbox" id="${id}" class="title">
+              <label for="${id}" class="titleLabel">${value}</label>
+            </div>
             <div class="btn-container">
               <button type="button" class="edit-btn">
                 <i class="fas fa-edit"></i>
@@ -227,9 +238,6 @@ function deleteItem(e) {
   const id = element.dataset.id;
   list.removeChild(element);
 
-  // if (list.children.length === 0) {
-  //   list.classList.remove("show-container");
-  // }
   displayAlert("Item Removed", "danger");
 
   setBackToDefault();
@@ -238,7 +246,8 @@ function deleteItem(e) {
 }
 function editItem(e) {
   const element = e.currentTarget.parentElement.parentElement;
-  editElement = element.querySelector(".titleLabel");
+  // editElement = element.querySelector(".titleLabel");
+  editElement = element.querySelector(".title");
   todoInput.value = editElement.innerHTML;
   editFlag = true;
   editID = element.dataset.id;
@@ -254,7 +263,7 @@ function setBackToDefault() {
 function setupEvents(date) {
   list.innerHTML = "";
 
-  let items = getLocalStorage();
+  let items = events;
   let eventforDay = items.filter(function (item) {
     if (item.date === date) {
       return item;
@@ -263,27 +272,24 @@ function setupEvents(date) {
   eventforDay.forEach(function (item) {
     if (item.date === date) {
       createListItem(item.id, item.value);
+      checked();
     }
   });
-  // todoContainer.classList.add("show-container");
 }
 
-function clearItems() {
-  localStorage.removeItem(events);
-}
 /* ================================================================ */
 
 /* =====================LOCAL STORAGE============================ */
 function addToLocalStorage(clicked, id, value) {
   const task = { date: clicked, id: id, value: value };
-  let items = getLocalStorage();
+  let items = events;
 
   items.push(task);
   localStorage.setItem("events", JSON.stringify(items));
 }
 
 function removeFromLocalStorage(id) {
-  let items = getLocalStorage();
+  let items = events;
 
   // remove item with the same id from parameter
   items = items.filter(function (item) {
@@ -291,10 +297,11 @@ function removeFromLocalStorage(id) {
       return item;
     }
   });
+
   localStorage.setItem("events", JSON.stringify(items));
 }
 function editLocalStorage(id, value) {
-  let items = getLocalStorage();
+  let items = events;
 
   items = items.map(function (item) {
     // edit the value of the specific id
@@ -307,7 +314,68 @@ function editLocalStorage(id, value) {
   localStorage.setItem("events", JSON.stringify(items));
 }
 
-function getLocalStorage() {
-  return events;
+function saveCheckboxState() {
+  let list = events;
+  list.forEach(function (listItem) {
+    let id = listItem.id;
+    let checkbox = document.getElementById(id);
+
+    let checkboxArr = { id: id, value: checkbox.checked };
+
+    let items = localStorage.getItem("checkbox")
+      ? JSON.parse(localStorage.getItem("checkbox"))
+      : [];
+    items = items.map(function (item) {
+      if (item.id === checkboxArr.id) {
+        item.value = checkboxArr.value;
+      } else {
+      }
+      return item;
+    });
+
+    items.push(checkboxArr);
+
+    let seen = {};
+    items = items.filter(function (entry) {
+      let previous;
+
+      // Have we seen this label before?
+      if (seen.hasOwnProperty(entry.id)) {
+        // Yes, grab it and add this data to it
+        previous = seen[entry.id];
+        previous.value.push(entry.value);
+
+        // Don't keep this entry, we've merged it into the previous one
+        return false;
+      }
+
+      // entry.data probably isn't an array; make it one for consistency
+      if (!Array.isArray(entry.value)) {
+        entry.value = [entry.value];
+      }
+
+      // Remember that we've seen it
+      seen[entry.id] = entry;
+
+      // Keep this one, we'll merge any others that match into it
+      return true;
+    });
+
+    localStorage.setItem("checkbox", JSON.stringify(items));
+  });
+}
+function checked() {
+  let items = JSON.parse(localStorage.getItem("checkbox"));
+
+  if (items) {
+    items.forEach(function (item) {
+      let id = item.id;
+      let value = item.value[0];
+      let checkbox = document.getElementById(id);
+      if (checkbox) {
+        checkbox.checked = value;
+      }
+    });
+  }
 }
 /* =========================================================== */
