@@ -63,6 +63,7 @@ a {
   font-size: 1.5rem;
   color: var(--lightColor);
   cursor: pointer;
+  transition: all 0.3s;
 }
 
 .months-container {
@@ -138,16 +139,18 @@ a {
   background: #fff;
   cursor: pointer;
   transition: 0.3s;
+  overflow-y: scroll;
 }
 .day:hover {
   /* opacity: 0.7; */
-  box-shadow: 0px 0px 10px var(-);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
 }
 
 .padding {
   box-shadow: none;
   background: none;
   cursor: default;
+  visibility: hidden;
 }
 .active {
   background: var(--lightColor);
@@ -162,7 +165,7 @@ a {
   font-size: 1rem;
   font-weight: 600;
   text-transform: capitalize;
-  letter-spacing: 5px;
+  letter-spacing: 1px;
   background: #a13d63;
   border-radius: 10px;
   padding: 0.1rem 0.3rem;
@@ -171,8 +174,8 @@ a {
   text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
 }
 #currentDay {
-  background: var(--darkColor);
-  color: var(--lightColor);
+  background: #b4e7ce;
+  color: var(--darkColor);
 }
 
 .eventState {

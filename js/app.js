@@ -17,10 +17,12 @@ let events = localStorage.getItem("events")
 
 const calendar = document.getElementById("calendar");
 
+// for loadMonth function
 let selectMonth = document.querySelectorAll(".months");
 selectMonth = Array.apply(null, selectMonth);
 let selectedMonth = new Date().getMonth();
 
+// for modal
 const newEventModal = document.getElementById("newEventModal");
 const modalBackDrop = document.getElementById("modalBackDrop");
 const closeBtn = document.querySelector(".close-btn");
@@ -31,16 +33,46 @@ const list = document.querySelector(".todo-list");
 const form = document.querySelector(".todo-form");
 const alert = document.querySelector(".alert");
 
+// for edit btn
 let editElement;
 let editFlag = false;
 let editID = "";
 
+// for select year
+const yearTitle = document.querySelector(".year");
+const nextBtn = document.querySelector(".next-button");
+const prevBtn = document.querySelector(".prev-button");
+let selectYear = new Date().getFullYear();
 /* ================================================================= */
 
 /* =======================EVENT LISTENERS============================= */
 closeBtn.addEventListener("click", closeModal);
 
 form.addEventListener("submit", addItem);
+
+nextBtn.addEventListener("click", function () {
+  selectYear++;
+  loadYear();
+  load();
+});
+nextBtn.addEventListener("mousedown", function () {
+  nextBtn.style.color = "#b4e7ce";
+});
+nextBtn.addEventListener("mouseup", function () {
+  nextBtn.style.color = "var(--lightColor)";
+});
+
+prevBtn.addEventListener("click", function () {
+  selectYear--;
+  loadYear();
+  load();
+});
+prevBtn.addEventListener("mousedown", function () {
+  nextBtn.style.color = "#b4e7ce";
+});
+prevBtn.addEventListener("mouseup", function () {
+  nextBtn.style.color = "var(--lightColor)";
+});
 
 window.addEventListener("DOMContentLoaded", function () {
   // set active class to current month
@@ -52,6 +84,8 @@ window.addEventListener("DOMContentLoaded", function () {
 
   // set color for events
   eventState();
+
+  loadYear();
 });
 /* ================================================================== */
 
@@ -73,6 +107,10 @@ function loadMonth() {
   });
 }
 
+function loadYear() {
+  yearTitle.textContent = selectYear;
+}
+
 function load() {
   const dt = new Date();
 
@@ -81,6 +119,13 @@ function load() {
     dt.setMonth(selectedMonth);
   } else {
     dt.setMonth(0);
+  }
+
+  // selected Year
+  if (selectYear !== dt.getFullYear()) {
+    dt.setFullYear(selectYear);
+  } else {
+    dt.setFullYear(dt.getFullYear());
   }
 
   const day = dt.getDate();
@@ -151,6 +196,7 @@ function load() {
     }
     calendar.appendChild(daySquare);
   }
+  checked();
 }
 
 // open modal
@@ -237,7 +283,7 @@ function createListItem(id, value) {
                 <i class="fas fa-edit"></i>
               </button>
               <button type="button" class="delete-btn">
-                <i class="fas fa-edit"></i>
+                <i class="far fa-trash-alt"></i>
               </button>
             </div>`;
 
