@@ -43,9 +43,15 @@ closeBtn.addEventListener("click", closeModal);
 form.addEventListener("submit", addItem);
 
 window.addEventListener("DOMContentLoaded", function () {
+  // set active class to current month
   selectMonth[selectedMonth].classList.add("active");
+  // load days for selected month
   loadMonth();
+  // load days & load days for current month
   load();
+
+  // set color for events
+  eventState();
 });
 /* ================================================================== */
 
@@ -81,6 +87,7 @@ function load() {
   const month = dt.getMonth();
   const year = dt.getFullYear();
 
+  // options for toLocaleDateString & passed as second parameter
   const options = {
     weekday: "long",
     year: "numeric",
@@ -128,6 +135,7 @@ function load() {
           const eventTitle = document.createElement("h2");
           eventTitle.classList.add("eventTitle");
           eventTitle.textContent = d.value;
+          eventTitle.id = `ID${d.id}`;
 
           eventDiv.appendChild(eventTitle);
         });
@@ -145,27 +153,36 @@ function load() {
   }
 }
 
+// open modal
 function addEvent(date) {
   newEventModal.style.display = "block";
   modalBackDrop.style.display = "block";
   clicked = date;
+  // if selected date has events, will load those existing events
   setupEvents(date);
 }
+
 function closeModal() {
+  // if theres an event stored, this will save its checkbox state
   if (events) {
     saveCheckboxState();
   }
+
   newEventModal.style.display = "none";
   modalBackDrop.style.display = "none";
   todoInput.value = "";
   clicked = null;
   setBackToDefault();
+
+  // reload page
   window.location.reload();
 }
 
 function addItem(e) {
+  // prevent submit btn from refreshing page
   e.preventDefault();
   const value = todoInput.value;
+  // unique ID
   const id = new Date().getTime().toString();
 
   if (value && !editFlag) {
@@ -174,10 +191,9 @@ function addItem(e) {
     // display alery
     displayAlert("item added to the list", "success");
 
+    setBackToDefault();
     // local STORAGE
     addToLocalStorage(clicked, id, value);
-
-    setBackToDefault();
   } else if (value && editFlag) {
     editElement.innerHTML = value;
     displayAlert("Text Changed", "success");
@@ -231,11 +247,12 @@ function createListItem(id, value) {
   editBtn.addEventListener("click", editItem);
 
   list.appendChild(element);
+  checked();
 }
 
 function deleteItem(e) {
-  const element = e.currentTarget.parentElement.parentElement;
-  const id = element.dataset.id;
+  let element = e.currentTarget.parentElement.parentElement;
+  let id = element.dataset.id;
   list.removeChild(element);
 
   displayAlert("Item Removed", "danger");
@@ -244,15 +261,17 @@ function deleteItem(e) {
   // remove from local storage
   removeFromLocalStorage(id);
 }
+
 function editItem(e) {
   const element = e.currentTarget.parentElement.parentElement;
-  // editElement = element.querySelector(".titleLabel");
-  editElement = element.querySelector(".title");
+  editElement = element.querySelector(".titleLabel");
+  // editElement = element.querySelector(".title");
   todoInput.value = editElement.innerHTML;
   editFlag = true;
   editID = element.dataset.id;
   addBtn.textContent = "Edit";
 }
+
 function setBackToDefault() {
   todoInput.value = "";
   editFlag = false;
@@ -272,7 +291,7 @@ function setupEvents(date) {
   eventforDay.forEach(function (item) {
     if (item.date === date) {
       createListItem(item.id, item.value);
-      checked();
+      // checked();
     }
   });
 }
@@ -289,7 +308,9 @@ function addToLocalStorage(clicked, id, value) {
 }
 
 function removeFromLocalStorage(id) {
-  let items = events;
+  let items = localStorage.getItem("events")
+    ? JSON.parse(localStorage.getItem("events"))
+    : [];
 
   // remove item with the same id from parameter
   items = items.filter(function (item) {
@@ -299,7 +320,19 @@ function removeFromLocalStorage(id) {
   });
 
   localStorage.setItem("events", JSON.stringify(items));
+
+  let checkboxSaved = localStorage.getItem("checkbox")
+    ? JSON.parse(localStorage.getItem("checkbox"))
+    : [];
+
+  checkboxSaved = checkboxSaved.filter(function (checkboxItem) {
+    if (checkboxItem.id !== id) {
+      return checkboxItem;
+    }
+  });
+  localStorage.setItem("checkbox", JSON.stringify(checkboxSaved));
 }
+
 function editLocalStorage(id, value) {
   let items = events;
 
@@ -320,7 +353,7 @@ function saveCheckboxState() {
     let id = listItem.id;
     let checkbox = document.getElementById(id);
 
-    let checkboxArr = { id: id, value: checkbox.checked };
+    let checkboxArr = checkbox ? { id: id, value: checkbox.checked } : {};
 
     let items = localStorage.getItem("checkbox")
       ? JSON.parse(localStorage.getItem("checkbox"))
@@ -361,19 +394,38 @@ function saveCheckboxState() {
       return true;
     });
 
-    localStorage.setItem("checkbox", JSON.stringify(items));
+    // remove empty objects from array
+    let newItems = items.filter((item) => Object.keys(item).length !== 0);
+
+    localStorage.setItem("checkbox", JSON.stringify(newItems));
   });
 }
+
 function checked() {
   let items = JSON.parse(localStorage.getItem("checkbox"));
 
   if (items) {
     items.forEach(function (item) {
       let id = item.id;
-      let value = item.value[0];
+      let value = item.value ? item.value[0] : [];
       let checkbox = document.getElementById(id);
       if (checkbox) {
         checkbox.checked = value;
+      }
+    });
+  }
+}
+
+function eventState() {
+  let items = localStorage.getItem("checkbox")
+    ? JSON.parse(localStorage.getItem("checkbox"))
+    : [];
+  const checkValue = true;
+  if (items) {
+    items.forEach(function (item) {
+      const colorState = document.getElementById(`ID${item.id}`);
+      if (item.value[0] === checkValue) {
+        colorState.classList.add("eventState");
       }
     });
   }

@@ -137,9 +137,11 @@ a {
   /* justify-content: space-between; */
   background: #fff;
   cursor: pointer;
+  transition: 0.3s;
 }
 .day:hover {
-  opacity: 0.7;
+  /* opacity: 0.7; */
+  box-shadow: 0px 0px 10px var(-);
 }
 
 .padding {
@@ -159,10 +161,22 @@ a {
 .eventTitle {
   font-size: 1rem;
   font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 5px;
+  background: #a13d63;
+  border-radius: 10px;
+  padding: 0.1rem 0.3rem;
+  margin-bottom: 5px;
+  color: #fff;
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
 }
 #currentDay {
   background: var(--darkColor);
   color: var(--lightColor);
+}
+
+.eventState {
+  background: #7bae7f;
 }
 
 /* ************ END OF CALENDAR *************** */
