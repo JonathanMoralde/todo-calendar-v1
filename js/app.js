@@ -162,7 +162,12 @@ function load() {
 
       // highlight today
       const monthToday = new Date().getMonth();
-      if (i - paddingDays === day && selectedMonth === monthToday) {
+      const yearToday = new Date().getFullYear();
+      if (
+        i - paddingDays === day &&
+        selectedMonth === monthToday &&
+        selectYear === yearToday
+      ) {
         daySquare.id = "currentDay";
       }
 
@@ -197,6 +202,7 @@ function load() {
     calendar.appendChild(daySquare);
   }
   checked();
+  eventState();
 }
 
 // open modal
