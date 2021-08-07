@@ -50,31 +50,24 @@ closeBtn.addEventListener("click", closeModal);
 
 form.addEventListener("submit", addItem);
 
-nextBtn.addEventListener("click", function () {
+// nextBtn.addEventListener("click", function () {
+//   selectYear++;
+//   loadYear();
+//   load();
+// });
+nextBtn.addEventListener("click", () => {
   selectYear++;
   loadYear();
   load();
 });
-nextBtn.addEventListener("mousedown", function () {
-  nextBtn.style.color = "#b4e7ce";
-});
-nextBtn.addEventListener("mouseup", function () {
-  nextBtn.style.color = "var(--lightColor)";
-});
 
-prevBtn.addEventListener("click", function () {
+prevBtn.addEventListener("click", () => {
   selectYear--;
   loadYear();
   load();
 });
-prevBtn.addEventListener("mousedown", function () {
-  nextBtn.style.color = "#b4e7ce";
-});
-prevBtn.addEventListener("mouseup", function () {
-  nextBtn.style.color = "var(--lightColor)";
-});
 
-window.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("DOMContentLoaded", () => {
   // set active class to current month
   selectMonth[selectedMonth].classList.add("active");
   // load days for selected month
@@ -91,13 +84,13 @@ window.addEventListener("DOMContentLoaded", function () {
 
 /* ========================FUNCTIONS============================= */
 function loadMonth() {
-  selectMonth.forEach(function (months) {
-    months.addEventListener("click", function (e) {
+  selectMonth.forEach((months) => {
+    months.addEventListener("click", (e) => {
       const m = e.currentTarget;
       selectedMonth = selectMonth.indexOf(m);
 
       if (m) {
-        selectMonth.forEach(function (i) {
+        selectMonth.forEach((i) => {
           i.classList.remove("active");
         });
       }
@@ -140,11 +133,13 @@ function load() {
     day: "numeric",
   };
 
+  // get first day
   const firstDayOfMonth = new Date(year, month, 1);
+  // calculate total days in a month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+  // determine which day in the week the month starts
   const dateString = firstDayOfMonth.toLocaleDateString("en-us", options);
-
   const paddingDays = weekdays.indexOf(dateString.split(", ")[0]);
 
   // wipe out days
@@ -172,7 +167,7 @@ function load() {
       }
 
       // add existing event to daysquare
-      let selectedDay = events.filter(function (item) {
+      let selectedDay = events.filter((item) => {
         if (item.date === dayString) {
           return item;
         }
@@ -181,7 +176,7 @@ function load() {
       if (selectedDay) {
         const eventDiv = document.createElement("div");
         eventDiv.classList.add("event");
-        selectedDay.forEach(function (d) {
+        selectedDay.forEach((d) => {
           const eventTitle = document.createElement("h2");
           eventTitle.classList.add("eventTitle");
           eventTitle.textContent = d.value;
@@ -193,14 +188,14 @@ function load() {
         daySquare.appendChild(eventDiv);
       }
 
-      daySquare.addEventListener("click", function () {
-        addEvent(dayString);
-      });
+      daySquare.addEventListener("click", () => addEvent(dayString));
     } else {
+      // else if i < padding days
       daySquare.classList.add("padding");
     }
     calendar.appendChild(daySquare);
   }
+
   checked();
   eventState();
 }
@@ -226,7 +221,7 @@ function closeModal() {
   clicked = null;
   setBackToDefault();
 
-  // reload page
+  // reload page to add events to eventdiv
   window.location.reload();
 }
 
@@ -265,7 +260,7 @@ function displayAlert(text, action) {
   alert.classList.add(`alert-${action}`);
 
   // remove alert
-  setTimeout(function () {
+  setTimeout(() => {
     alert.textContent = "";
     alert.classList.remove(`alert-${action}`);
   }, 1000);
@@ -299,6 +294,7 @@ function createListItem(id, value) {
   editBtn.addEventListener("click", editItem);
 
   list.appendChild(element);
+
   checked();
 }
 
@@ -335,15 +331,14 @@ function setupEvents(date) {
   list.innerHTML = "";
 
   let items = events;
-  let eventforDay = items.filter(function (item) {
+  let eventforDay = items.filter((item) => {
     if (item.date === date) {
       return item;
     }
   });
-  eventforDay.forEach(function (item) {
+  eventforDay.forEach((item) => {
     if (item.date === date) {
       createListItem(item.id, item.value);
-      // checked();
     }
   });
 }
@@ -352,7 +347,7 @@ function setupEvents(date) {
 
 /* =====================LOCAL STORAGE============================ */
 function addToLocalStorage(clicked, id, value) {
-  const task = { date: clicked, id: id, value: value };
+  const task = { date: clicked, id, value };
   let items = events;
 
   items.push(task);
@@ -365,7 +360,7 @@ function removeFromLocalStorage(id) {
     : [];
 
   // remove item with the same id from parameter
-  items = items.filter(function (item) {
+  items = items.filter((item) => {
     if (item.id !== id) {
       return item;
     }
@@ -377,7 +372,7 @@ function removeFromLocalStorage(id) {
     ? JSON.parse(localStorage.getItem("checkbox"))
     : [];
 
-  checkboxSaved = checkboxSaved.filter(function (checkboxItem) {
+  checkboxSaved = checkboxSaved.filter((checkboxItem) => {
     if (checkboxItem.id !== id) {
       return checkboxItem;
     }
@@ -388,7 +383,7 @@ function removeFromLocalStorage(id) {
 function editLocalStorage(id, value) {
   let items = events;
 
-  items = items.map(function (item) {
+  items = items.map((item) => {
     // edit the value of the specific id
     if (item.id === id) {
       item.value = value;
@@ -401,27 +396,28 @@ function editLocalStorage(id, value) {
 
 function saveCheckboxState() {
   let list = events;
-  list.forEach(function (listItem) {
+  list.forEach((listItem) => {
     let id = listItem.id;
     let checkbox = document.getElementById(id);
 
-    let checkboxArr = checkbox ? { id: id, value: checkbox.checked } : {};
+    let checkboxArr = checkbox ? { id, value: checkbox.checked } : {};
 
     let items = localStorage.getItem("checkbox")
       ? JSON.parse(localStorage.getItem("checkbox"))
       : [];
-    items = items.map(function (item) {
+
+    items = items.map((item) => {
       if (item.id === checkboxArr.id) {
         item.value = checkboxArr.value;
-      } else {
       }
       return item;
     });
 
     items.push(checkboxArr);
 
+    // merge the same object in an array
     let seen = {};
-    items = items.filter(function (entry) {
+    items = items.filter((entry) => {
       let previous;
 
       // Have we seen this label before?
@@ -457,7 +453,7 @@ function checked() {
   let items = JSON.parse(localStorage.getItem("checkbox"));
 
   if (items) {
-    items.forEach(function (item) {
+    items.forEach((item) => {
       let id = item.id;
       let value = item.value ? item.value[0] : [];
       let checkbox = document.getElementById(id);
@@ -474,7 +470,7 @@ function eventState() {
     : [];
   const checkValue = true;
   if (items) {
-    items.forEach(function (item) {
+    items.forEach((item) => {
       const colorState = document.getElementById(`ID${item.id}`);
       if (item.value[0] === checkValue) {
         colorState.classList.add("eventState");

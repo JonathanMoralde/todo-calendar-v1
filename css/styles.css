@@ -31,9 +31,6 @@ a {
 /* ================================================================== */
 
 /* ===============================MAIN=============================== */
-.main-container {
-  grid-template-columns: 1fr 7fr;
-}
 /******************** NAVBAR ********************/
 .navbar {
   display: block;
@@ -60,10 +57,14 @@ a {
 .next-button {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: var(--lightColor);
   cursor: pointer;
   transition: all 0.3s;
+}
+.prev-button:hover,
+.next-button:hover {
+  transform: scale(1.3);
 }
 
 .months-container {
@@ -149,9 +150,6 @@ a {
 }
 
 .padding {
-  box-shadow: none;
-  background: none;
-  cursor: default;
   visibility: hidden;
 }
 .active {
@@ -220,6 +218,10 @@ a {
   font-size: 1.5rem;
   color: #721c24;
   cursor: pointer;
+  transition: all 0.3s;
+}
+.close-btn:hover {
+  transform: scale(1.3);
 }
 .todo-form {
   padding: 3rem 2rem 1rem 2rem;
@@ -297,6 +299,9 @@ a {
 .todo-container {
   padding: 0 3rem;
 }
+.todo-list {
+  margin-bottom: 1rem;
+}
 .todoItem {
   display: flex;
   justify-content: space-between;
@@ -351,12 +356,17 @@ a {
   font-size: 1.1rem;
   margin: 0 5px;
   cursor: pointer;
+  transition: all 0.3s;
 }
 .edit-btn {
   color: #155724;
 }
 .delete-btn {
   color: #721c24;
+}
+.edit-btn:hover,
+.delete-btn:hover {
+  transform: scale(1.3);
 }
 
 /* ************ END OF MODAL *************** */
