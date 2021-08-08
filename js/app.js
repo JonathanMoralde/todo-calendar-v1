@@ -221,7 +221,8 @@ function closeModal() {
   clicked = null;
   setBackToDefault();
 
-  // reload page to add events to eventdiv
+  // I NEED ANOTHER FUNCTION THAT CHECKS THE DIVS CONTENT
+  // load();
   window.location.reload();
 }
 
@@ -424,17 +425,17 @@ function saveCheckboxState() {
       if (seen.hasOwnProperty(entry.id)) {
         // Yes, grab it and add this data to it
         previous = seen[entry.id];
-        previous.value.push(entry.value);
+        // previous.value.push(entry.value);
 
         // Don't keep this entry, we've merged it into the previous one
         return false;
       }
-
+      /*
       // entry.data probably isn't an array; make it one for consistency
       if (!Array.isArray(entry.value)) {
         entry.value = [entry.value];
       }
-
+*/
       // Remember that we've seen it
       seen[entry.id] = entry;
 
@@ -455,7 +456,7 @@ function checked() {
   if (items) {
     items.forEach((item) => {
       let id = item.id;
-      let value = item.value ? item.value[0] : [];
+      let value = item.value ? item.value : false;
       let checkbox = document.getElementById(id);
       if (checkbox) {
         checkbox.checked = value;
@@ -468,11 +469,10 @@ function eventState() {
   let items = localStorage.getItem("checkbox")
     ? JSON.parse(localStorage.getItem("checkbox"))
     : [];
-  const checkValue = true;
   if (items) {
     items.forEach((item) => {
       const colorState = document.getElementById(`ID${item.id}`);
-      if (item.value[0] === checkValue) {
+      if (item.value && colorState !== null) {
         colorState.classList.add("eventState");
       }
     });
